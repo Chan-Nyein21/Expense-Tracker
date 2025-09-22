@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Form Clear</title>
+</head>
+<body>
+    <div id="container"></div>
+    
+    <script type="module">
+        import { ExpenseForm } from './src/components/ExpenseForm.js';
+        
+        const container = document.getElementById('container');
+        
+        // Mock categories
+        const mockCategories = [
+            { id: 'default-food', name: 'Food', icon: '🍕', color: '#FF6B6B' },
+            { id: 'default-transport', name: 'Transport', icon: '🚗', color: '#4ECDC4' }
+        ];
+        
+        // Create form with mock onSubmit that returns a resolved promise
+        const expenseForm = new ExpenseForm(container, {
+            onSubmit: async (data) => {
+                console.log('Form submitted with:', data);
+                // Simulate async operation
+                await new Promise(resolve => setTimeout(resolve, 100));
+                return { success: true };
+            },
+            onCancel: () => console.log('Form cancelled'),
+            categories: mockCategories
+        });
+        
+        expenseForm.render();
+        
+        // Test form clearing
+        window.testFormClear = async function() {
+            console.log('Testing form clear...');
+            
+            // Fill form
+            const amountInput = container.querySelector('input[name="amount"]');
+            const descInput = container.querySelector('input[name="description"]');
+            
+            amountInput.value = '25.50';
+            descInput.value = 'Test expense';
+            
+            console.log('Before submission - Amount:', amountInput.value, 'Description:', descInput.value);
+            
+            // Submit form
+            const form = container.querySelector('form');
+            const submitEvent = new Event('submit');
+            
+            // Dispatch event and wait a bit for async operations
+            form.dispatchEvent(submitEvent);
+            
+            // Wait for async operations to complete
+            await new Promise(resolve => setTimeout(resolve, 200));
+            
+            console.log('After submission - Amount:', amountInput.value, 'Description:', descInput.value);
+        };
+        
+        console.log('Form rendered. Call testFormClear() to test.');
+    </script>
+</body>
+</html>

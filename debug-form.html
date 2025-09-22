@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug ExpenseForm</title>
+</head>
+<body>
+    <div id="form-container"></div>
+    
+    <script type="module">
+        import { ExpenseForm } from './src/components/ExpenseForm.js';
+        
+        const container = document.getElementById('form-container');
+        const expenseForm = new ExpenseForm({
+            container,
+            onSubmit: (data) => {
+                console.log('onSubmit called with:', data);
+            }
+        });
+        
+        expenseForm.render().then(() => {
+            console.log('Form rendered');
+            
+            // Test validation
+            const amountInput = container.querySelector('input[name="amount"]');
+            amountInput.value = '-50.00';
+            
+            const form = container.querySelector('form');
+            console.log('Form element:', form);
+            
+            form.addEventListener('submit', (e) => {
+                console.log('Submit event triggered');
+            });
+            
+            const submitEvent = new Event('submit', { bubbles: true });
+            form.dispatchEvent(submitEvent);
+        });
+    </script>
+</body>
+</html>
